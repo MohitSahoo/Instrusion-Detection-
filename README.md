@@ -40,6 +40,7 @@ A unified web application that combines **Intrusion Detection System** and **Str
 ```bash
 git clone https://github.com/MohitSahoo/Instrusion-Detection-.git
 cd Instrusion-Detection-
+ ```
 
 2. **Install dependencies**
    ```bash
@@ -138,19 +139,5 @@ DAA lab el togther/
 
 This project is created for educational purposes in the context of DAA (Design and Analysis of Algorithms) lab work.
 
-# How to Run this Project
-
-cd "/Users/aamiribrahim/Downloads/DAA lab el togther"
-
--> Install dependencies (one-time setup)
-pip install -r requirements_unified.txt
-
--> Run the app
-python unified_app.py
-
--> Access in browser
--> http://localhost:5000
-
----
 
 **🚀 Happy analyzing!** 🛡️

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cyber Security Analysis Platform</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0a0f1c 0%,
+          #1a1f35 50%,
+          #0f1419 100%
+        );
+        background-attachment: fixed;
+        color: #e2e8f0;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 2rem;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(37, 99, 235, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(59, 130, 246, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 40%,
+            rgba(99, 102, 241, 0.05) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(148, 163, 184, 0.1),
+          inset 0 1px 0 rgba(148, 163, 184, 0.1);
+        padding: 3rem;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        position: relative;
+        animation: containerSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      @keyframes containerSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        color: #e2e8f0;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(
+          135deg,
+          #3b82f6 0%,
+          #1e40af 25%,
+          #06b6d4 50%,
+          #0ea5e9 75%,
+          #3b82f6 100%
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        animation: gradientShift 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
+      }
+
+      .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .app-card {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .app-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(59, 130, 246, 0.1),
+          transparent
+        );
+        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .app-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+      }
+
+      .app-card:hover::before {
+        left: 100%;
+      }
+
+      .app-card h2 {
+        color: #e2e8f0;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .app-card p {
+        color: #94a3b8;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .app-card .features {
+        list-style: none;
+        margin-bottom: 1.5rem;
+      }
+
+      .app-card .features li {
+        color: #cbd5e1;
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      .app-card .features li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #10b981;
+        font-weight: bold;
+      }
+
+      .app-button {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: #ffffff;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      }
+
+      .app-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .app-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4),
+          0 0 0 1px rgba(59, 130, 246, 0.5);
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      }
+
+      .app-button:hover::before {
+        left: 100%;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(59, 130, 246, 0.2);
+        color: #64748b;
+      }
+
+      @media (max-width: 768px) {
+        .apps-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .container {
+          padding: 2rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🛡️ Cyber Security Analysis Platform</h1>
+      <p class="subtitle">
+        Advanced intrusion detection and string matching algorithms for
+        cybersecurity analysis
+      </p>
+
+      <div class="apps-grid">
+        <div
+          class="app-card"
+          onclick="window.location.href='/intrusion-detection'"
+        >
+          <h2>🔍 Intrusion Detection System</h2>
+          <p>
+            Detect malicious patterns in log files and network traffic using
+            advanced string matching algorithms.
+          </p>
+          <ul class="features">
+            <li>Real-time log analysis</li>
+            <li>Multiple algorithm support (KMP, Horspool, Boyer-Moore)</li>
+            <li>File upload capability</li>
+            <li>Detailed detection results</li>
+            <li>Performance metrics</li>
+          </ul>
+          <button class="app-button">Launch Intrusion Detection</button>
+        </div>
+
+        <div class="app-card" onclick="window.location.href='/string-matching'">
+          <h2>🔗 String Matching Algorithms</h2>
+          <p>
+            Visualize and compare different string matching algorithms with
+            interactive step-by-step analysis.
+          </p>
+          <ul class="features">
+            <li>Interactive algorithm visualization</li>
+            <li>Multiple algorithm comparison</li>
+            <li>Performance benchmarking</li>
+            <li>Real-time step-by-step analysis</li>
+            <li>Attack pattern detection</li>
+          </ul>
+          <button class="app-button">Launch String Matching</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          🚀 Unified Platform - Both applications running on a single port for
+          seamless integration
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

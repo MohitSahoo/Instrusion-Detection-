@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cyber String Matching Algorithms Visualizer</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div style="text-align: right; margin-bottom: 1rem">
+        <button
+          onclick="window.location.href='/'"
+          style="
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+          "
+        >
+          🏠 Home
+        </button>
+        <button
+          onclick="window.location.href='/intrusion-detection'"
+          style="
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+          "
+        >
+          🔙 Intrusion Detection
+        </button>
+      </div>
+
+      <h1>Cyber String Matching Algorithms Visualizer</h1>
+      <p class="app-description">Dynamic string matching visualization</p>
+
+      <div class="input-section">
+        <!-- <div class="input-group">
+          <label for="scenarioSelect">Choose a Cybersecurity Use Case:</label>
+          <select id="scenarioSelect">
+            {% for key, scenario in cyber_scenarios.items() %}
+            <option value="{{ key }}">{{ scenario.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="scenario-description" id="scenarioDescription"></div> -->
+
+        <div class="input-group">
+          <label for="textInput" id="textLabel"
+            >Text (e.g. Network Traffic):</label
+          >
+          <textarea
+            id="textInput"
+            rows="5"
+            placeholder="Enter your text here..."
+          ></textarea>
+        </div>
+        <div class="input-group">
+          <label for="patternInput" id="patternLabel"
+            >Pattern (e.g., Malware Signature, Exploit String):</label
+          >
+          <input
+            type="text"
+            id="patternInput"
+            placeholder="Enter pattern to search..."
+          />
+          <div
+            style="
+              margin-top: 0.75rem;
+              padding: 0.75rem;
+              background: rgba(59, 130, 246, 0.05);
+              border-radius: 8px;
+              border: 1px solid rgba(59, 130, 246, 0.2);
+            "
+          >
+            <label
+              for="patternSelect"
+              style="
+                font-size: 0.9rem;
+                color: #94a3b8;
+                font-weight: 600;
+                display: block;
+                margin-bottom: 0.5rem;
+              "
+            >
+              🔍 Quick Select - Common Attack Patterns:
+            </label>
+            <select
+              id="patternSelect"
+              style="
+                width: 100%;
+                padding: 0.75rem;
+                border-radius: 6px;
+                border: 1px solid #374151;
+                background: #1f2937;
+                color: #e5e7eb;
+                font-size: 0.9rem;
+              "
+            >
+              <option value="">-- Select an attack pattern --</option>
+              <option value="' OR '1'='1">SQL Injection: ' OR '1'='1</option>
+              <option value="<script>">XSS: &lt;script&gt;</option>
+              <option value="../../">Path Traversal: ../../</option>
+              <option value="wget">Command Injection: wget</option>
+              <option value="curl">Command Injection: curl</option>
+              <option value="nc">Command Injection: nc</option>
+              <option value="'--">SQL Injection: '--</option>
+            </select>
+            <div
+              style="
+                margin-top: 0.5rem;
+                font-size: 0.8rem;
+                color: #6b7280;
+                font-style: italic;
+              "
+            >
+              💡 Tip: Select a pattern to auto-fill the input above, or type
+              your own pattern
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="algorithmSelect">Detection Algorithm:</label>
+          <select id="algorithmSelect">
+            <option value="naive">Naive Search</option>
+            <option value="boyer_moore">Boyer-Moore</option>
+            <option value="horspool">Horspool</option>
+          </select>
+        </div>
+        <button id="analyzeButton">Run Detection (Analyze Selected)</button>
+        <button id="compareAllButton">Compare All Detection Algorithms</button>
+      </div>
+
+      <div class="results-section">
+        <h2>Detection Results</h2>
+        <div id="resultsOutput"></div>
+      </div>
+
+      <div class="visualization-section" style="display: none">
+        <h2>Algorithm Visualization <span id="visualAlgoName"></span></h2>
+        <div class="visualization-controls">
+          <button id="prevFrame" disabled>⏮️ Previous</button>
+          <span id="frameCounter">0 / 0</span>
+          <button id="nextFrame" disabled>Next ⏭️</button>
+          <button id="playPause" disabled>▶️ Play</button>
+          <label for="speedSlider">Speed:</label>
+          <input
+            type="range"
+            id="speedSlider"
+            min="50"
+            max="2000"
+            value="500"
+          />
+          <span class="keyboard-hints"
+            >(Use ← → arrow keys to navigate, Space to play/pause)</span
+          >
+        </div>
+        <div class="visualization-content">
+          <div class="text-container">
+            <h3>Text</h3>
+            <pre id="textDisplay" class="code-display"></pre>
+          </div>
+          <div class="pattern-container">
+            <h3>Pattern</h3>
+            <pre id="patternDisplay" class="code-display"></pre>
+          </div>
+          <div id="extraInfo" class="extra-info"></div>
+          <div id="messageDisplay" class="message-display"></div>
+          <div id="matchesDisplay" class="matches-display">
+            ✨ Matches found:
+          </div>
+        </div>
+      </div>
+
+      <div class="benchmark-section">
+        <h2>Performance Benchmark (Scalability for Security Scanning)</h2>
+        <p>
+          Compares all detection algorithms across different data sizes.
+          Understanding scalability is crucial for real-world security systems.
+        </p>
+        <div class="input-group">
+          <label for="benchmarkPatternSize"
+            >Signature/Pattern Size (for benchmark):</label
+          >
+          <input type="number" id="benchmarkPatternSize" value="5" min="1" />
+        </div>
+        <div class="input-group">
+          <label for="benchmarkNumTrials">Number of Trials (per size):</label>
+          <input type="number" id="benchmarkNumTrials" value="5" min="1" />
+        </div>
+        <button id="runBenchmarkButton">Run Scalability Benchmark</button>
+        <div id="benchmarkOutput"></div>
+        <div id="benchmarkPlot"></div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+      // Check for URL parameters and pre-fill text if provided
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const textParam = urlParams.get("text");
+
+        if (textParam) {
+          const textInput = document.getElementById("textInput");
+          textInput.value = decodeURIComponent(textParam);
+
+          // Check if the loaded text contains any attack patterns and suggest them
+          const loadedText = decodeURIComponent(textParam).toLowerCase();
+          const attackPatterns = [
+            { value: "' OR '1'='1", label: "SQL Injection: ' OR '1'='1" },
+            { value: "<script>", label: "XSS: <script>" },
+            { value: "../../", label: "Path Traversal: ../../" },
+            { value: "wget", label: "Command Injection: wget" },
+            { value: "curl", label: "Command Injection: curl" },
+            { value: "nc", label: "Command Injection: nc" },
+            { value: "'--", label: "SQL Injection: '--" },
+          ];
+
+          const patternSelect = document.getElementById("patternSelect");
+          const foundPatterns = attackPatterns.filter((pattern) =>
+            loadedText.includes(pattern.value.toLowerCase())
+          );
+
+          if (foundPatterns.length > 0) {
+            // Add a suggested pattern option
+            const suggestedOption = document.createElement("option");
+            suggestedOption.value = foundPatterns[0].value;
+            suggestedOption.textContent = `🎯 Suggested: ${foundPatterns[0].label}`;
+            suggestedOption.style.color = "#10b981";
+            suggestedOption.style.fontWeight = "bold";
+            patternSelect.insertBefore(
+              suggestedOption,
+              patternSelect.firstChild.nextSibling
+            );
+          }
+
+          // Show a notification that text was loaded from intrusion detection app
+          const notification = document.createElement("div");
+          notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            z-index: 1000;
+            font-weight: 600;
+            animation: slideIn 0.5s ease-out;
+          `;
+          notification.innerHTML =
+            "✅ Text loaded from Intrusion Detection App";
+          document.body.appendChild(notification);
+
+          // Remove notification after 3 seconds
+          setTimeout(() => {
+            notification.style.animation = "slideOut 0.5s ease-in";
+            setTimeout(() => notification.remove(), 500);
+          }, 3000);
+        }
+      });
+
+      // Add CSS animations for notification
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Handle pattern dropdown selection
+      document
+        .getElementById("patternSelect")
+        .addEventListener("change", function () {
+          const selectedPattern = this.value;
+          const patternInput = document.getElementById("patternInput");
+
+          if (selectedPattern) {
+            patternInput.value = selectedPattern;
+            // Highlight the pattern input to show it was auto-filled
+            patternInput.style.borderColor = "#3b82f6";
+            patternInput.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+
+            // Reset the highlight after 2 seconds
+            setTimeout(() => {
+              patternInput.style.borderColor = "";
+              patternInput.style.boxShadow = "";
+            }, 2000);
+          }
+        });
+
+      // Handle pattern input changes to clear dropdown if user types manually
+      document
+        .getElementById("patternInput")
+        .addEventListener("input", function () {
+          const patternSelect = document.getElementById("patternSelect");
+          if (patternSelect.value) {
+            patternSelect.value = "";
+          }
+        });
+    </script>
+  </body>
+</html>

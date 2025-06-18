@@ -36,10 +36,11 @@ A unified web application that combines **Intrusion Detection System** and **Str
 ## 🛠️ Installation
 
 1. **Clone or download the project**
-   ```bash
-  git clone https://github.com/MohitSahoo/Instrusion-Detection-.git
-  cd Instrusion-Detection-
-   ```
+
+```bash
+git clone https://github.com/MohitSahoo/Instrusion-Detection-.git
+cd Instrusion-Detection-
+
 2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
